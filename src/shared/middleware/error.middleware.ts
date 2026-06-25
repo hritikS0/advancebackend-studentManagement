@@ -12,10 +12,10 @@ export function errorHandler(
     return res.status(400).json({
       success: false,
       message: "Validation failed",
-      errors: err.issues.map((issue) => {
-        field: issue.path.join(".");
-        message: issue.message;
-      }),
+      errors: err.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      })),
     });
   }
   if (err instanceof AppError) {

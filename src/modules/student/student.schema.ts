@@ -9,3 +9,5 @@ export const createStudentSchema = z.object({
   email: z.email("Invalid email address").trim().toLowerCase(),
   age: z.number().int().min(18, "Student must be least 18 year old"),
 });
+
+export const updateStudentSchema = createStudentSchema.partial();
