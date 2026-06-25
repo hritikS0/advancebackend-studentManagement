@@ -1,6 +1,7 @@
 import express from "express";
 import studentRouter from "./modules/student/student.routes.js";
 import { errorHandler } from "./shared/middleware/error.middleware.js";
+import authRouter from "./modules/auth/auth.routes.js";
 // app
 const app = express();
 
@@ -16,7 +17,7 @@ app.get("/health", (req, res) => {
 });
 // routes
 app.use("/students", studentRouter);
-
+app.use("/auth", authRouter);
 // config
 app.use(errorHandler);
 export default app;

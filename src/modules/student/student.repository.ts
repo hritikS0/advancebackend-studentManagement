@@ -7,11 +7,14 @@ import type {
 
 export class StudentRepository {
   async findAll(query: StudentQuery) {
-    const { page, limit, search, sortBy, sortOrder } = query;
+    const {
+      page,
+      limit,
+      search,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+    } = query;
     const skip = (page - 1) * limit;
-    console.log(sortBy);
-    console.log(sortOrder);
-
     const where = search
       ? {
           OR: [
