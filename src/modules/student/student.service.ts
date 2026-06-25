@@ -1,11 +1,15 @@
 import { AppError } from "../../shared/errors/AppError.js";
 import { StudentRepository } from "./student.repository.js";
-import type { CreateStudentDto, UpdateStudentDto } from "./student.types.js";
+import type {
+  CreateStudentDto,
+  StudentQuery,
+  UpdateStudentDto,
+} from "./student.types.js";
 
 export class StudentService {
   constructor(private readonly studentRepository: StudentRepository) {}
-  async getStudents() {
-    return this.studentRepository.findAll();
+  async getStudents(query: StudentQuery) {
+    return this.studentRepository.findAll(query);
   }
   async createStudent(data: CreateStudentDto) {
     const existingStudent = await this.studentRepository.findByEmail(

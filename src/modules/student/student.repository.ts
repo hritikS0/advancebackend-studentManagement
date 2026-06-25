@@ -1,13 +1,63 @@
 import prisma from "../../database/prisma.js";
-import type { CreateStudentDto, UpdateStudentDto } from "./student.types.js";
+import type {
+  CreateStudentDto,
+  StudentQuery,
+  UpdateStudentDto,
+} from "./student.types.js";
 
 export class StudentRepository {
-  async findAll() {
-    return prisma.student.findMany({
-      orderBy: {
-        createdAt: "desc",
+  async findAll(query: StudentQuery) {
+    const { page, limit, search, sortBy, sortOrder } = query;
+    const skip = (page - 1) * limit;
+    console.log(sortBy);
+    console.log(sortOrder);
+
+    const where = search
+      ? {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              email: {
+                contains: search,
+                mode: "insensitive" as const,
+              },
+            },
+          ],
+        }
+      : {};
+    const [students, total] = await Promise.all([
+      prisma.student.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+      }),
+      prisma.student.count({
+        where,
+      }),
+    ]);
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
       },
-    });
+      data: students,
+    };
   }
   async createStudent(data: CreateStudentDto) {
     return prisma.student.create({

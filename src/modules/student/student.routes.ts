@@ -3,6 +3,8 @@ import { StudentController } from "./student.controller.js";
 import { asyncHandler } from "../../shared/utils/asyncHandler.js";
 import { StudentRepository } from "./student.repository.js";
 import { StudentService } from "./student.service.js";
+import { createStudentSchema, updateStudentSchema } from "./student.schema.js";
+import { validate } from "../../shared/middleware/validation.middleware.js";
 
 const router = Router();
 
@@ -13,6 +15,7 @@ const studentController = new StudentController(studentService);
 
 router.post(
   "/",
+  validate(createStudentSchema),
   asyncHandler(studentController.createStudent.bind(studentController)),
 );
 router.get(
@@ -25,6 +28,7 @@ router.get(
 );
 router.patch(
   "/:id",
+  validate(updateStudentSchema),
   asyncHandler(studentController.updateStudent.bind(studentController)),
 );
 router.delete(

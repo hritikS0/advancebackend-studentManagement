@@ -1,8 +1,12 @@
+import { z } from "zod";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-export const env = {
-  PORT: process.env.PORT || 4000,
-  NODE_ENV: process.env.NODE_ENV || "development",
-};
+const envSchema = z.object({
+  PORT: z.string(),
+  NODE_ENV: z.string(),
+  DATABASE_URL: z.string(),
+});
+
+export const env = envSchema.parse(process.env);
