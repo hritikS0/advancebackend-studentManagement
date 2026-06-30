@@ -18,11 +18,29 @@ export class AuthController {
   async loginUser(req: Request, res: Response) {
     const { email, password } = req.body;
     const user = await this.authService.loginUser({ email, password });
+    res.cookie("refreshToken", user.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     sendResponse({
       res,
       statusCode: 200,
       success: true,
       data: user,
+    });
+  }
+  async refreshToken(req: Request, res: Response) {
+    const { refreshToken } = req.body;
+    const tokens = await this.authService.refreshAccessToken(refreshToken);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      success: true,
+      message: "Token refreshed successfully",
+      data: tokens,
     });
   }
 }

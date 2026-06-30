@@ -3,7 +3,7 @@ import { UserRepository } from "./auth.repository.js";
 import { AuthService } from "./auth.service.js";
 import { AuthController } from "./auth.controller.js";
 import { validate } from "../../shared/middleware/validation.middleware.js";
-import { loginSchema, registerSchema } from "./auth.schema.js";
+import { loginSchema, refreshTokenSchema, registerSchema } from "./auth.schema.js";
 import { asyncHandler } from "../../shared/utils/asyncHandler.js";
 
 const router = Router();
@@ -21,6 +21,11 @@ router.post(
   "/login",
   validate(loginSchema),
   asyncHandler(authController.loginUser.bind(authController)),
+);
+router.post(
+  "/refresh",
+  validate(refreshTokenSchema),
+  asyncHandler(authController.refreshToken.bind(authController)),
 );
 
 export default router;
