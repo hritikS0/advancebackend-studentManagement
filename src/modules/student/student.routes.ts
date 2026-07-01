@@ -24,23 +24,29 @@ router.post(
 );
 router.get(
   "/",
+  authorize("ADMIN", "STUDENT"),
   auth,
   asyncHandler(studentController.getStudent.bind(studentController)),
 );
 router.get(
   "/:id",
+  authorize("ADMIN", "STUDENT"),
   auth,
   asyncHandler(studentController.getStudentById.bind(studentController)),
 );
 router.patch(
   "/:id",
+
   auth,
+  authorize("ADMIN"),
   validate(updateStudentSchema),
   asyncHandler(studentController.updateStudent.bind(studentController)),
 );
 router.delete(
   "/:id",
+  authorize("ADMIN"),
   auth,
+  authorize("ADMIN"),
   asyncHandler(studentController.deleteStudent.bind(studentController)),
 );
 export default router;

@@ -38,7 +38,7 @@ export class AuthService {
       throw new AppError(401, "Invalid email or password");
     }
     const payload = {
-      user: user.id,
+      id: user.id,
       email: user.email,
       role: user.role,
     };
@@ -55,11 +55,11 @@ export class AuthService {
     };
   }
   async refreshAccessToken(refreshToken: string) {
-    let decoded: { user: string; email: string; role: string };
+    let decoded: { id: string; email: string; role: string };
 
     try {
       decoded = verifyRefreshToken(refreshToken) as {
-        user: string;
+        id: string;
         email: string;
         role: string;
       };
@@ -73,7 +73,7 @@ export class AuthService {
     }
 
     const payload = {
-      user: user.id,
+      id: user.id,
       email: user.email,
       role: user.role,
     };
@@ -84,5 +84,21 @@ export class AuthService {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
     };
+  }
+  async getCurrentUser(userId: string) {
+    const user = await this.userRepository.findById(userId);
+
+    if (!user) {
+      throw new AppError(404, "User not found");
+    }
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+  }
+  async logout() {
+    return;
   }
 }
